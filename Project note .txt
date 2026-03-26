@@ -1,0 +1,48 @@
+﻿Project note : 
+Finnhub API : 
++Websocket : The value return may be null because some stock don’t have their trade condition ( c ) public so pay attention to how to handle value
+Also kafka only receive data in byte[ ] so it can speedup the process therefore if the data have a complete structure we need a rule (schema ) to determine how it can be transferred (Always note the CAP theorem point out that only 2 in 3 point can work in a system which kafka is a CP system but can be tuned via configurations like acks and replication settings).
+
+
+Kafka:
+Why kafka ?
+It's fast . Latency , throughput ?
+High throughput - move a lot of data fast.
+
+
+1-Using sequential I/O kafka can process data much faster compared to random I/O 
+This is why Kafka is CP system because it give up the A(Availability)
+Take it simple if you give more time to locate where to put your book clearly, not just throw it randomly in the library you will have an easy time to find it , but it will take more time to find a spot for that book to be placed . Data is diff from a book if kafka can not handle so many requests at time it will have to ask you to retry or deny that request so it clearly can not be available every second.  
+
+
+2-Using RAM 
+Consumer read from RAM which have more reading speed than disk 
+
+
+Also when reading something , usually a system will involve a “temp” file to ensure the process can go on if something is wrong in the process . Kafka skip this step and read directly from the system which skip the write and read step .
+
+
+3-Data efficient 
+Simple how the system works, doing 1 job always faster than doing many jobs ,Kafka simply just appends and reads the data with no join or any query  transaction involved .
+
+
+Spark 
+
+
+Kafka is using a very simple data structure , in order to get that simple data structure for storing Spark will have to read the data and transfer to the right from of cassandra 
+* Using kafka port : There is a different from where to use “ localhost “ in the .env base on is the kafka run in docker or not 
+* Care for the cassandra auth 
+* The index 50 error   ?
+
+
+Cassandra 
+Why cassandra ?
+With a real-time stock data which is a fast , big data have to be consistency 
+So unlike Kafa where it have it always have data to receive the data when come to cassandra is the data where it has been transformed and have to be saved all the time
+It mean the system always have to be  available second to make sure the data don't lost
+How ? Cassandra has its structure called node ,data is stored at many different nodes.
+Each node can write and read independently if 1 node down the other can still work as normal , when that node comes back it still can be updated by the other node .  It also knows when the data is outdated or wrong .The downside is the data of each node can be different.
+
+
+Terraform:
+Update…….
