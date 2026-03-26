@@ -1,0 +1,87 @@
+version: "3.8"
+
+services:
+
+  kafka:
+    build:
+      context: ./kafka
+      dockerfile: Dockerfile
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+     CLUSTER_ID: q1Sh-9_ISia_zwGINzRvyQ
+
+     KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+     KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+    networks:
+      - bigdata
+
+  cassandra:
+    build:
+      context: ./cassandra
+      dockerfile: Dockerfile
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    networks:
+      - bigdata
+  
+  spark-k8s:
+    build:
+      context: ./StreamProcessor
+      dockerfile: Dockerfile
+    container_name: spark-k8s
+    depends_on: 
+      - kafka
+      - cassandra
+    command: >
+     /bin/bash -c "
+     mkdir -p /tmp/.ivy2/cache &&
+     mkdir -p /tmp/.ivy2/jars &&
+     /opt/spark/bin/spark-submit
+     --master local[*]
+     --conf spark.jars.ivy=/tmp/.ivy2
+     --class StreamProcessor
+     --packages com.datastax.spark:spark-cassandra-connector_2.12:3.3.0,com.github.jnr:jnr-posix:3.1.15
+     /opt/spark/app/app.jar
+     "=
+     
+    networks:
+      - bigdata
+
+  finnhubproducer:
+    build:
+      context: ./FinnhubProducer
+      dockerfile: Dockerfile
+    container_name: finnhub-producer
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_SERVER: kafka:9092
+      FINNHUB_API_TOKEN: ${FINNHUB_API_TOKEN}
+      FINNHUB_STOCKS_TICKERS: '["BINANCE:BTCUSDT"]'
+      FINNHUB_VALIDATE_TICKERS: "0"
+      KAFKA_TOPIC: market
+    networks:
+      - bigdata
+
+  grafana:
+    build:
+      context: ./grafana
+      dockerfile: Dockerfile
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - cassandra
+    networks:
+      - bigdata
+
+networks:
+  bigdata:
+    driver: bridge  

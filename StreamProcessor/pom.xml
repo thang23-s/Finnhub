@@ -1,0 +1,54 @@
+<properties>
+  <spark.version>3.5.0</spark.version>
+  <scala.binary.version>2.12</scala.binary.version>
+</properties>
+
+<dependencies>
+
+  <!-- Spark -->
+  <dependency>
+    <groupId>org.apache.spark</groupId>
+    <artifactId>spark-core_${scala.binary.version}</artifactId>
+    <version>${spark.version}</version>
+    <scope>provided</scope>
+  </dependency>
+
+  <dependency>
+    <groupId>org.apache.spark</groupId>
+    <artifactId>spark-sql_${scala.binary.version}</artifactId>
+    <version>${spark.version}</version>
+    <scope>provided</scope>
+  </dependency>
+
+  <!-- Kafka -->
+  <dependency>
+    <groupId>org.apache.spark</groupId>
+    <artifactId>spark-sql-kafka-0-10_${scala.binary.version}</artifactId>
+    <version>${spark.version}</version>
+    <scope>provided</scope>
+  </dependency>
+
+  <!-- Avro -->
+  <dependency>
+    <groupId>org.apache.spark</groupId>
+    <artifactId>spark-avro_${scala.binary.version}</artifactId>
+    <version>${spark.version}</version>
+    <scope>provided</scope>
+  </dependency>
+
+  <!-- Cassandra -->
+  <dependency>
+    <groupId>com.datastax.spark</groupId>
+    <artifactId>spark-cassandra-connector_${scala.binary.version}</artifactId>
+    <version>3.5.0</version>
+    <scope>provided</scope>
+  </dependency>
+
+  <!-- Config -->
+  <dependency>
+    <groupId>com.typesafe</groupId>
+    <artifactId>config</artifactId>
+    <version>1.4.1</version>
+  </dependency>
+
+</dependencies>

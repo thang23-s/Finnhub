@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  kafka:
+    kafka:
+  build:
+    context: ./kafka
+    dockerfile: Dockerfile
+  container_name: kafka
+  ports:
+    - "9092:9092"
+  environment:
+    CLUSTER_ID: q1Sh-9_ISia_zwGINzRvyQ
+
+    KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+    KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+    KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+    KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+  networks:
+    - bigdata 
